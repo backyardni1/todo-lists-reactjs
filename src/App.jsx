@@ -190,13 +190,6 @@ function App() {
           setAllCompleted={setAllCompleted}
           setAllInComplete={setAllInComplete}
         />
-        <br />
-        <br />
-
-        <small>
-          Reactjs -{' '}
-          <a href="https://backyardni1.com">https://backyardni1.com</a>
-        </small>
       </div>
     </div>
   );

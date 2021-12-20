@@ -38,8 +38,7 @@ function TodoFilters(props) {
       Mark All <button onClick={() => props.setAllCompleted()}>
         Complete
       </button>{' '}
-      <button onClick={() => props.setAllInComplete()}>Incomplete</button>
-      <br /> <br />
+      <button onClick={() => props.setAllInComplete()}>Incomplete</button>{' '}
       <button onClick={(e) => props.clearTodos(e)}>Clear All</button>
     </div>
   );

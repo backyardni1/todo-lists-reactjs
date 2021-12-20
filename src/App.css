@@ -7,6 +7,18 @@
   pointer-events: none;
 }
 
+ul li span.line-through {
+  text-decoration: line-through;
+}
+
+a.deleteLink {
+  margin-left: 10px;
+}
+
+ul li {
+  list-style-type: none;
+}
+
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
     animation: App-logo-spin infinite 20s linear;
@@ -26,6 +38,10 @@
 
 .App-link {
   color: #61dafb;
+}
+
+img.addIcon {
+  position: absolute;
 }
 
 @keyframes App-logo-spin {

@@ -6,9 +6,10 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 
 ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
+  // COMMENTED OUT the React.StrictMode there's an issue with react 'findDOMNode' and yet fix
+  // <React.StrictMode>
+  <App />,
+  // </React.StrictMode>,
   document.getElementById('root')
 );
 

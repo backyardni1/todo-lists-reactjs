@@ -1,20 +1,39 @@
-import React, { useState } from 'react';
+import React, { useContext, useRef, useState } from 'react';
 import propTypes from 'prop-types';
 import TodoFilters from './TodoFilters';
+import { TodosContext } from '../context/TodosContext';
+import { TodoListsContext } from '../context/TodoListsContext';
+import {
+  TransitionGroup,
+  CSSTransition,
+  SwitchTransition,
+} from 'react-transition-group';
 
-function TodoLists(props) {
+function TodoLists() {
+  const {
+    todos,
+    setTodos,
+    markAsCompleted,
+    markAsEditing,
+    onElementPress,
+    autoSave,
+    todosFiltered,
+  } = useContext(TodosContext);
   const [filter, setFilter] = useState('all');
 
   //Props Types making sure the param value pass is a correct type
   //func means the its passing a function
   TodoLists.propTypes = {
-    todoDelete: propTypes.func.isRequired,
-    markAsCompleted: propTypes.func.isRequired,
-    markAsEditing: propTypes.func.isRequired,
-    onElementPress: propTypes.func.isRequired,
-    autoSave: propTypes.func.isRequired,
-    setAllCompleted: propTypes.func.isRequired,
-    setAllInComplete: propTypes.func.isRequired,
+    // markAsCompleted: propTypes.func.isRequired,
+    // markAsEditing: propTypes.func.isRequired,
+    // onElementPress: propTypes.func.isRequired,
+    // autoSave: propTypes.func.isRequired,
+  };
+
+  let todoDelete = (e, todoId) => {
+    e.preventDefault();
+
+    setTodos(todos.filter((todo) => todo.id !== parseInt(todoId)));
   };
 
   function deleteRender(todo) {
@@ -22,7 +41,7 @@ function TodoLists(props) {
       <a
         href="javascript;"
         className="deleteLink"
-        onClick={(event) => props.todoDelete(event, todo.id)}
+        onClick={(event) => todoDelete(event, todo.id)}
       >
         <img src="icons8-delete-16.png" alt="" />
       </a>
@@ -31,53 +50,61 @@ function TodoLists(props) {
 
   return (
     <div>
-      {props.todos.length > 0 ? (
-        <ul>
-          {props.todosFiltered(filter).map((todo, index) => (
-            <li key={todo.id}>
-              {!todo.isEditing && (
-                <input
-                  type="checkbox"
-                  onChange={(event) => props.markAsCompleted(event, todo.id)}
-                  checked={`${todo.isCompleted ? 'checked' : ''}`}
-                />
-              )}
+      {/* {todos.length > 0 ? ( */}
 
-              {!todo.isEditing && (
-                <span
-                  className={`${todo.isCompleted ? 'line-through' : ''}`}
-                  onDoubleClick={() => props.markAsEditing(todo.id)}
-                >
-                  {todo.title}
-                </span>
-              )}
+      <CSSTransition
+        in={todos.length > 0}
+        timeout={300}
+        classNames="todo-lists"
+        unmountOnExit
+      >
+        <TransitionGroup component="ul" className="todo-list">
+          {todosFiltered(filter).map((todo, index) => (
+            <CSSTransition key={todo.id} timeout={300} classNames="item">
+              <li key={todo.id}>
+                {!todo.isEditing && (
+                  <input
+                    type="checkbox"
+                    onChange={(event) => markAsCompleted(event, todo.id)}
+                    checked={`${todo.isCompleted ? 'checked' : ''}`}
+                  />
+                )}
 
-              {todo.isEditing && (
-                <input
-                  type="text"
-                  defaultValue={todo.title}
-                  onKeyDown={(event) => props.onElementPress(event, todo.id)}
-                  onBlur={(event) => props.autoSave(event, todo.id)}
-                  autoFocus
-                />
-              )}
+                {!todo.isEditing && (
+                  <span
+                    className={`${todo.isCompleted ? 'line-through' : ''}`}
+                    onDoubleClick={() => markAsEditing(todo.id)}
+                  >
+                    {todo.title}
+                  </span>
+                )}
 
-              {!todo.isEditing && deleteRender(todo)}
-            </li>
+                {todo.isEditing && (
+                  <input
+                    type="text"
+                    defaultValue={todo.title}
+                    onKeyDown={(event) => onElementPress(event, todo.id)}
+                    onBlur={(event) => autoSave(event, todo.id)}
+                    autoFocus
+                  />
+                )}
+
+                {!todo.isEditing && deleteRender(todo)}
+              </li>
+            </CSSTransition>
           ))}
-        </ul>
-      ) : (
+        </TransitionGroup>
+      </CSSTransition>
+      <CSSTransition
+        in={todos.length === 0}
+        timeout={300}
+        classNames="todo-lists"
+        unmountOnExit
+      >
         <p>No todo lists</p>
-      )}
-      {props.todos.length > 0 && (
-        <TodoFilters
-          todos={props.todos}
-          setFilter={setFilter}
-          clearTodos={props.clearTodos}
-          setAllCompleted={props.setAllCompleted}
-          setAllInComplete={props.setAllInComplete}
-        />
-      )}
+      </CSSTransition>
+
+      {todos.length > 0 && <TodoFilters setFilter={setFilter} />}
     </div>
   );
 }

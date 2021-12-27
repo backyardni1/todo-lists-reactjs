@@ -19,6 +19,43 @@ ul li {
   list-style-type: none;
 }
 
+.todo-lists-enter {
+  opacity: 0;
+}
+.todo-lists-enter-active {
+  opacity: 1;
+  transition: opacity 200ms;
+}
+.todo-lists-exit {
+  opacity: 1;
+}
+.todo-lists-exit-active {
+  opacity: 0;
+  transition: opacity 200ms;
+}
+
+.item-enter {
+  opacity: 0;
+  transform: translateX(20px);
+}
+.item-enter-active {
+  opacity: 1;
+  transition: all 300ms;
+  transform: translateX(0);
+
+}
+.item-exit {
+  opacity: 1;
+  transform: translateX(0);
+
+}
+.item-exit-active {
+  opacity: 0;
+  transition: all 300ms;
+  transform: translateX(20px);
+}
+
+
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
     animation: App-logo-spin infinite 20s linear;

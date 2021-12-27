@@ -1,25 +1,51 @@
 import propTypes from 'prop-types';
-import React from 'react';
+import React, { useContext, useMemo } from 'react';
+import { TodosContext } from '../context/TodosContext';
 
 TodoFilters.prototype = {
   setFilter: propTypes.func.isRequired,
   clearTodos: propTypes.func.isRequired,
-  setAllCompleted: propTypes.func.isRequired,
-  setAllIncompleted: propTypes.func.isRequired,
 };
 
 function TodoFilters(props) {
-  function countAll() {
-    return props.todos.length;
+  const { todos, setTodos } = useContext(TodosContext);
+
+  function clearTodos(e) {
+    e.preventDefault();
+    setTodos([]);
   }
 
+  function setAllCompleted() {
+    let newLists = todos.map((todo) => {
+      todo.isCompleted = true;
+      return todo;
+    });
+    setTodos(newLists);
+  }
+
+  function setAllInComplete() {
+    let newLists = todos.map((todo) => {
+      todo.isCompleted = false;
+      return todo;
+    });
+    setTodos(newLists);
+  }
+
+  function countAll() {
+    // console.log('slow load data');
+    // for (let index = 0; index < 200000000; index++) {}
+    return todos.length;
+  }
+
+  // const countAllValue = useMemo(countAll, [props.todos]);
+
   function countActive() {
-    let active = props.todos.filter((todo) => todo.isCompleted === false);
+    let active = todos.filter((todo) => todo.isCompleted === false);
     return active.length;
   }
 
   function countCompleted() {
-    let completed = props.todos.filter((todo) => todo.isCompleted === true);
+    let completed = todos.filter((todo) => todo.isCompleted === true);
     return completed.length;
   }
 
@@ -35,11 +61,9 @@ function TodoFilters(props) {
       <br />
       <br />
       <br />
-      Mark All <button onClick={() => props.setAllCompleted()}>
-        Complete
-      </button>{' '}
-      <button onClick={() => props.setAllInComplete()}>Incomplete</button>{' '}
-      <button onClick={(e) => props.clearTodos(e)}>Clear All</button>
+      Mark All <button onClick={() => setAllCompleted()}>Complete</button>{' '}
+      <button onClick={() => setAllInComplete()}>Incomplete</button>{' '}
+      <button onClick={(e) => clearTodos(e)}>Clear All</button>
     </div>
   );
 }

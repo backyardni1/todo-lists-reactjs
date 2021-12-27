@@ -1,64 +1,33 @@
 import logo from './logo.svg';
 import './App.css';
-import { useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import FormTodo from './components/FormTodo';
 import TodoLists from './components/TodoLists';
+import useToggle from './hooks/useToggle';
+import useLocalStorage from './hooks/useLocalStorage';
+import { TodosContext } from './context/TodosContext';
+import { TodoListsContext } from './context/TodoListsContext';
+import { CSSTransition } from 'react-transition-group';
 
 function App() {
-  const [todos, setTodos] = useState([
-    {
-      id: 1,
-      title: 'Grocery at 09:00 AM',
-      isCompleted: false,
-      isEditing: false,
-    },
-    {
-      id: 2,
-      title: 'Sleep early',
-      isCompleted: false,
-      isEditing: false,
-    },
-    {
-      id: 3,
-      title: 'Feed the chickens',
-      isCompleted: true,
-      isEditing: false,
-    },
-    {
-      id: 4,
-      title: 'Do fishing',
-      isCompleted: false,
-      isEditing: false,
-    },
-    {
-      id: 5,
-      title: 'Eating sweet potato',
-      isCompleted: false,
-      isEditing: false,
-    },
-    {
-      id: 6,
-      title: 'Playing basketball',
-      isCompleted: true,
-      isEditing: false,
-    },
-  ]);
+  const [isTodoListsVisible, setIsTodoListsVisible] = useToggle(true);
+  const nameElement = useRef(null);
 
-  const [todoUniqueId, setTodoUniqueId] = useState(todos.length + 1);
+  const [name, setName] = useLocalStorage('name', '');
+  const [todos, setTodos] = useLocalStorage('todos', []);
+
+  const [todoUniqueId, setTodoUniqueId] = useLocalStorage(
+    'todoId',
+    todos.length + 1
+  );
 
   const [todoInput, setTodoInput] = useState('');
-
-  let todoDelete = (e, todoId) => {
-    e.preventDefault();
-
-    setTodos(todos.filter((todo) => todo.id !== parseInt(todoId)));
-  };
 
   let todoAdd = (element) => {
     element.preventDefault();
 
-    if (todoInput.trim().length <= 10) {
-      alert('Please enter minimum of 10 characters.');
+    if (todoInput.trim().length <= 5) {
+      alert('Please enter minimum of 5 characters.');
       return;
     }
 
@@ -134,6 +103,7 @@ function App() {
   }
 
   function todosFiltered(filter) {
+    // for (let index = 0; index < 200000000; index++) {}
     switch (filter) {
       case 'active':
         return todos.filter((todo) => todo.isCompleted === false);
@@ -146,52 +116,83 @@ function App() {
     }
   }
 
-  function clearTodos(e) {
-    e.preventDefault();
-    setTodos([]);
-  }
+  // useEffect(() => {
+  //   console.log('use effect');
+  // }, [name, todos]);
 
-  function setAllCompleted() {
-    let newLists = todos.map((todo) => {
-      todo.isCompleted = true;
-      return todo;
-    });
-    setTodos(newLists);
-  }
+  // useEffect(() => {
+  //   console.log('use effect');
 
-  function setAllInComplete() {
-    let newLists = todos.map((todo) => {
-      todo.isCompleted = false;
-      return todo;
-    });
-    setTodos(newLists);
-  }
+  //   return function cleanup() {
+  //     console.log('clean up');
+  //   };
+  // }, [name]);
+
+  // const todosFileterd = useMemo(todosFiltered, [todos]);
 
   return (
-    <div className="App">
-      <div className="container">
-        <h1>Todo Lists (ReactJS)</h1>
+    <TodosContext.Provider
+      value={{
+        todos,
+        setTodos,
+        markAsCompleted,
+        markAsEditing,
+        onElementPress,
+        autoSave,
+        todosFiltered,
+      }}
+    >
+      <div className="App">
+        <div className="container">
+          <h1>Todo Lists (ReactJS)</h1>
+          <button onClick={() => nameElement.current.focus()}>
+            focus on button
+          </button>
+          <br /> <br />
+          <div className="name-container">
+            <input
+              type="text"
+              placeholder="What is your name?"
+              ref={nameElement}
+              defaultValue={name}
+              onChange={() => setName(nameElement.current.value)}
+            />
+          </div>
+          {name && <p className="name-container">Hi {name},</p>}
+          <br />
+          <div className="custom-hook-container">
+            <button
+              className="button"
+              onClick={() =>
+                setIsTodoListsVisible(
+                  (previousValueIsVisible) => !previousValueIsVisible
+                )
+              }
+            >
+              Toggle TodoLists
+            </button>
 
-        <FormTodo
-          todoInput={todoInput}
-          handleInput={handleInput}
-          todoAdd={todoAdd}
-        />
-        {todos.length > 0 && <p>Note: double click todo item to edit.</p>}
-        <TodoLists
-          todos={todos}
-          markAsCompleted={markAsCompleted}
-          markAsEditing={markAsEditing}
-          onElementPress={onElementPress}
-          autoSave={autoSave}
-          todoDelete={todoDelete}
-          todosFiltered={todosFiltered}
-          clearTodos={clearTodos}
-          setAllCompleted={setAllCompleted}
-          setAllInComplete={setAllInComplete}
-        />
+            <br />
+            <br />
+          </div>
+          <FormTodo
+            todoInput={todoInput}
+            handleInput={handleInput}
+            todoAdd={todoAdd}
+          />
+          {todos.length > 0 && <p>Note: double click todo item to edit.</p>}
+          {/* {isTodoListsVisible && <TodoLists />} */}
+          <CSSTransition
+            in={isTodoListsVisible}
+            timeout={300}
+            classNames="todo-lists"
+            unmountOnExit
+          >
+            <TodoLists />
+          </CSSTransition>
+        </div>
       </div>
-    </div>
+    </TodosContext.Provider>
   );
 }
 

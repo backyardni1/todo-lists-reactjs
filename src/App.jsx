@@ -158,7 +158,15 @@ function App() {
               onChange={() => setName(nameElement.current.value)}
             />
           </div>
-          {name && <p className="name-container">Hi {name},</p>}
+          {/* {name && <p className="name-container">Hi {name},</p>} */}
+          <CSSTransition
+            in={name.length > 0}
+            timeout={300}
+            classNames="slide-vertical"
+            unmountOnExit
+          >
+            <p className="name-container">Hi {name},</p>
+          </CSSTransition>
           <br />
           <div className="custom-hook-container">
             <button

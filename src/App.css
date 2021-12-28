@@ -77,6 +77,21 @@ ul li {
 }
 
 
+.nav-container ul {
+  text-align: center;
+}
+
+.nav-container ul li {
+  display: inline;
+  padding: 10px;
+}
+
+
+a.nav-link.selected {
+  font-weight: bold;
+  color: red;
+}
+
 
 
 @media (prefers-reduced-motion: no-preference) {

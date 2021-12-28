@@ -1,14 +1,15 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import App from './App';
+// import App from './App';
 // import AppClass from './AppClass';
 import reportWebVitals from './reportWebVitals';
+import Root from './Root';
 
 ReactDOM.render(
   // COMMENTED OUT the React.StrictMode there's an issue with react 'findDOMNode' and yet fix
   // <React.StrictMode>
-  <App />,
+  <Root />,
   // </React.StrictMode>,
   document.getElementById('root')
 );

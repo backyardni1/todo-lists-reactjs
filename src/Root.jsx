@@ -8,6 +8,7 @@ import {
 } from 'react-router-dom';
 import Blog from './components/pages/Blog';
 import BlogPost from './components/pages/BlogPost';
+import AjaxCall from './components/pages/AjaxCall';
 
 export default function Root() {
   let routes = [
@@ -15,6 +16,7 @@ export default function Root() {
     { to: '/about', pageName: 'About' },
     { to: '/blog', pageName: 'Blog' },
     { to: '/contact', pageName: 'Contact' },
+    { to: '/ajaxcalls', pageName: 'Ajax Call' },
   ];
   return (
     <Router>
@@ -42,6 +44,7 @@ export default function Root() {
           <Route exact path="/blog" element={<Blog />} />
           <Route exact path="/blog/:id" element={<BlogPost />} />
           <Route exact path="/contact" element={'contact here'} />
+          <Route exact path="/ajaxcalls" element={<AjaxCall />} />
           <Route exact path="*" element={'Page Not found 404'} />
         </Routes>
       </div>

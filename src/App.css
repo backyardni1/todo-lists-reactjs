@@ -15,9 +15,9 @@ a.deleteLink {
   margin-left: 10px;
 }
 
-ul li {
+/* ul li {
   list-style-type: none;
-}
+} */
 
 .todo-lists-enter {
   opacity: 0;

@@ -8,7 +8,10 @@ export default function AjaxCall() {
       .then((response) => response.json())
       .then((results) => {
         setData(results.data.children);
-        console.log(results.data.children);
+        // console.log(results.data.children);
+      })
+      .catch(() => {
+        console.log('error');
       });
   }, []);
 
